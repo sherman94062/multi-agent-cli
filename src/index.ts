@@ -8,9 +8,18 @@ import type { PipelineContext } from "./types.js";
 
 // ── Context accumulation ──────────────────────────────────────────────────────
 
+// Max characters per prior agent output included in context (~5k tokens each).
+const MAX_CONTEXT_CHARS_PER_AGENT = 6000;
+
 function buildContextBlock(ctx: PipelineContext, currentTask: string): string {
   const sections = ctx.results
-    .map((r) => `## ${r.role.toUpperCase()} OUTPUT\n${r.text}`)
+    .map((r) => {
+      const text =
+        r.text.length > MAX_CONTEXT_CHARS_PER_AGENT
+          ? r.text.slice(0, MAX_CONTEXT_CHARS_PER_AGENT) + "\n\n[…truncated for brevity]"
+          : r.text;
+      return `## ${r.role.toUpperCase()} OUTPUT\n${text}`;
+    })
     .join("\n\n");
 
   return sections
