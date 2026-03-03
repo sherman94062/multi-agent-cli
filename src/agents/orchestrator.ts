@@ -1,5 +1,5 @@
 import type Anthropic from "@anthropic-ai/sdk";
-import { anthropic, THINKING_PARAM } from "./client.js";
+import { anthropic } from "./client.js";
 import { CONFIG } from "../config.js";
 import type { OrchestratorPlan } from "../types.js";
 
@@ -62,7 +62,6 @@ export async function planTask(topic: string): Promise<OrchestratorPlan> {
   const response = await anthropic.messages.create({
     model: CONFIG.MODEL,
     max_tokens: CONFIG.ORCHESTRATOR_MAX_TOKENS,
-    thinking: THINKING_PARAM,
     system: SYSTEM_PROMPT,
     tools: [CREATE_PLAN_TOOL],
     tool_choice: { type: "any" },
