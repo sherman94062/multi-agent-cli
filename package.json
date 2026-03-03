@@ -1,0 +1,19 @@
+{
+  "name": "multi-agent-cli",
+  "version": "1.0.0",
+  "description": "Multi-agent research pipeline CLI powered by Claude Opus 4.6",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "dev": "tsx watch src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.51.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.3",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}
