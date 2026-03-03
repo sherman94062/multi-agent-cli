@@ -19,7 +19,7 @@ try {
 
 export const CONFIG = {
   ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY ?? "",
-  MODEL: "claude-opus-4-6",
+  MODEL: "claude-sonnet-4-6",
   ORCHESTRATOR_MAX_TOKENS: 4096,
   SPECIALIST_MAX_TOKENS: 16000,
   MAX_TOOL_ITERATIONS: 8,

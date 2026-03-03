@@ -1,7 +1,6 @@
 import type Anthropic from "@anthropic-ai/sdk";
 import { anthropic, THINKING_PARAM, WEB_SEARCH_TOOL } from "./client.js";
 import { toolRegistry } from "../tools/index.js";
-import { withRateLimitRetry } from "./retry.js";
 import { CONFIG } from "../config.js";
 import type { AgentResult, AgentRole, DeltaCallback, ToolCallRecord } from "../types.js";
 
@@ -33,16 +32,14 @@ export async function runAgent(
   ];
 
   for (let i = 0; i < CONFIG.MAX_TOOL_ITERATIONS; i++) {
-    const stream = await withRateLimitRetry(role, () =>
-      Promise.resolve(anthropic.messages.stream({
-        model: CONFIG.MODEL,
-        max_tokens: CONFIG.SPECIALIST_MAX_TOKENS,
-        thinking: THINKING_PARAM,
-        system: systemPrompt,
-        tools,
-        messages,
-      })),
-    );
+    const stream = anthropic.messages.stream({
+      model: CONFIG.MODEL,
+      max_tokens: CONFIG.SPECIALIST_MAX_TOKENS,
+      thinking: THINKING_PARAM,
+      system: systemPrompt,
+      tools,
+      messages,
+    });
 
     const toolUseAccumulator = new Map<
       number,

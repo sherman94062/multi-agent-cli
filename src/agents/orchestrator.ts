@@ -1,7 +1,6 @@
 import type Anthropic from "@anthropic-ai/sdk";
 import { anthropic } from "./client.js";
 import { CONFIG } from "../config.js";
-import { withRateLimitRetry } from "./retry.js";
 import type { OrchestratorPlan } from "../types.js";
 
 const SYSTEM_PROMPT = `\
@@ -60,16 +59,14 @@ const CREATE_PLAN_TOOL: Anthropic.Tool = {
 };
 
 export async function planTask(topic: string): Promise<OrchestratorPlan> {
-  const response = await withRateLimitRetry("orchestrator", () =>
-    anthropic.messages.create({
-      model: CONFIG.MODEL,
-      max_tokens: CONFIG.ORCHESTRATOR_MAX_TOKENS,
-      system: SYSTEM_PROMPT,
-      tools: [CREATE_PLAN_TOOL],
-      tool_choice: { type: "any" },
-      messages: [{ role: "user", content: `Research topic: ${topic}` }],
-    }),
-  );
+  const response = await anthropic.messages.create({
+    model: CONFIG.MODEL,
+    max_tokens: CONFIG.ORCHESTRATOR_MAX_TOKENS,
+    system: SYSTEM_PROMPT,
+    tools: [CREATE_PLAN_TOOL],
+    tool_choice: { type: "any" },
+    messages: [{ role: "user", content: `Research topic: ${topic}` }],
+  });
 
   const toolUseBlock = response.content.find((b) => b.type === "tool_use");
   if (!toolUseBlock || toolUseBlock.type !== "tool_use") {
